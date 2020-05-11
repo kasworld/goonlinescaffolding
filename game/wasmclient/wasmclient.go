@@ -87,11 +87,10 @@ func InitApp() {
 		go clientcookie.ClearSession()
 		return nil
 	}))
-	// js.Global().Set("enterField", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
-	// 	go app.enterStage()
-	// 	return nil
-	// }))
-	go app.enterStage()
+	js.Global().Set("enterField", js.FuncOf(func(this js.Value, args []js.Value) interface{} {
+		go app.enterStage()
+		return nil
+	}))
 }
 
 func (app *WasmClient) enterStage() {

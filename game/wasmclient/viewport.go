@@ -34,7 +34,7 @@ func NewViewport() *Viewport {
 	vp := &Viewport{
 		rnd: rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
-	vp.Canvas, vp.context2d = getCnv2dCtx("viewport2DCanvas")
+	vp.Canvas, vp.context2d = getCnv2dCtx("viewport")
 	return vp
 }
 
