@@ -67,6 +67,4 @@ Log 패키지 및 커스텀 로그레벨 로거 생성기 : https://github.com/k
 
 logrotate 에 관련된 부분 https://github.com/kasworld/log
 
-config 를 ini 형태로 저장하기 위해 사용하는 gopkg.in/ini.v1 
-
 정도가 windows에서 문제를 일으킬 가능성이 있습니다. 
