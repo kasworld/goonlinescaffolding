@@ -7,6 +7,13 @@ goguelike, gowasm2dgame, gowasm3dgame, gofieldwar(비공개) 등을 만들며 �
 
 기본 코드는 stage 기반의 채팅기능 만이 존재하며 각 프로젝트에 필요에 따라 확장해 쓰시면 됩니다. 
 
+html5 canvas 를 사용한 2D game 예제를 보려면 https://github.com/kasworld/gowasm2dgame
+
+webgl 을 사용한 3D game 예제를 보려면 https://github.com/kasworld/gowasm3dgame
+
+좀 복잡한 게임(수만 라인 규모) 예제를 보려면 https://github.com/kasworld/goguelike
+
+를 참고하시면 됩니다. 
 
 
 # 사전 준비 사항 ( goguelike 의 INSTALL.md 참고)
