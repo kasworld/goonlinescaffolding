@@ -5,7 +5,7 @@ go 언어로 만든 websocket-server, webassembly-client 를 지원하는 서비
 goguelike, gowasm2dgame, gowasm3dgame, gofieldwar(비공개) 등을 만들며 사용한 코드들의 
 공통 부분들을 모아서 다른 프로젝트에도 사용하기 편하게 정리한 것입니다. 
 
-기본 코드는 stage 기반의 채팅기능 만이 존재하며 각 프로젝트의 필요에 따라 확장해 쓰시면 됩니다. 
+기본 코드는 stage 기반의 채팅기능만이 존재하며 각 프로젝트의 필요에 따라 확장해 쓰시면 됩니다. 
 
 html5 canvas 를 사용한 2D game 예제를 보려면 https://github.com/kasworld/gowasm2dgame
 
@@ -59,7 +59,7 @@ Log 패키지 및 커스텀 로그레벨 로거 생성기 : https://github.com/k
 
 # windows 에서 작동시키려면?
 
-테스트 한적은 없지만 
+build.sh같은 shell script 이외에도 
 
 리눅스 서비스로 만들기 위해 사용하는 https://github.com/kasworld/signalhandle 
 
