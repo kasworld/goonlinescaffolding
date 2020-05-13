@@ -31,13 +31,13 @@ genlog -leveldatafile ./goslog/goslog.data -packagename goslog
 cd ..
 
 
-ProtocolW2DFiles="protocol_gos/*.enum"
+ProtocolGOSFiles="protocol_gos/*.enum"
 
-PROTOCOL_W2D_VERSION=`cat ${ProtocolW2DFiles}| sha256sum | awk '{print $1}'`
-echo "Protocol W2D Version:" ${PROTOCOL_W2D_VERSION}
+PROTOCOL_GOS_VERSION=`cat ${ProtocolGOSFiles}| sha256sum | awk '{print $1}'`
+echo "Protocol GOS Version:" ${PROTOCOL_GOS_VERSION}
 
 cd protocol_gos
-genprotocol -ver=${PROTOCOL_W2D_VERSION} \
+genprotocol -ver=${PROTOCOL_GOS_VERSION} \
     -basedir=. \
     -prefix=gos -statstype=int
 
@@ -72,6 +72,7 @@ const DataVersion = \"${Data_VERSION}\"
 BIN_DIR="bin"
 SRC_DIR="rundriver"
 
+mkdir -p ${BIN_DIR}
 echo ${BUILD_VER} > ${BIN_DIR}/BUILD
 
 BuildBin ${SRC_DIR}/server.go ${BIN_DIR} server
@@ -80,3 +81,10 @@ BuildBin ${SRC_DIR}/multiclient.go ${BIN_DIR} multiclient
 cd rundriver
 ./genwasmclient.sh
 cd ..
+
+# copy data to bin folder
+echo cp -r rundriver/serverdata ${BIN_DIR}
+cp -r rundriver/serverdata ${BIN_DIR}
+echo cp -r rundriver/clientdata ${BIN_DIR}
+cp -r rundriver/clientdata ${BIN_DIR}
+
