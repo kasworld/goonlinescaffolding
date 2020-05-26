@@ -14,20 +14,40 @@ package stagemanager
 import (
 	"sync"
 
-	"github.com/kasworld/goonlinescaffolding/game/stage"
-	"github.com/kasworld/goonlinescaffolding/lib/goslog"
+	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_connbytemanager"
 )
 
-type Manager struct {
-	log      *goslog.LogBase
-	mutex    sync.RWMutex `prettystring:"hide"`
-	id2stage map[string]*stage.Stage
+type stageI interface {
+	GetUUID() string
+	GetConnManager() *gos_connbytemanager.Manager
 }
 
-func New(log *goslog.LogBase) *Manager {
+type stageList []stageI
+
+func (stgl stageList) Len() int { return len(stgl) }
+func (stgl stageList) Swap(i, j int) {
+	stgl[i], stgl[j] = stgl[j], stgl[i]
+}
+func (stgl stageList) Less(i, j int) bool {
+	ao1 := stgl[i]
+	ao2 := stgl[j]
+	return ao1.GetUUID() > ao2.GetUUID()
+}
+
+type logI interface {
+	Error(format string, v ...interface{})
+}
+
+type Manager struct {
+	log      logI
+	mutex    sync.RWMutex `prettystring:"hide"`
+	id2stage map[string]stageI
+}
+
+func New(log logI) *Manager {
 	man := &Manager{
 		log:      log,
-		id2stage: make(map[string]*stage.Stage),
+		id2stage: make(map[string]stageI),
 	}
 	return man
 }
@@ -36,7 +56,7 @@ func (man *Manager) Count() int {
 	return len(man.id2stage)
 }
 
-func (man *Manager) GetAny() *stage.Stage {
+func (man *Manager) GetAny() stageI {
 	man.mutex.RLock()
 	defer man.mutex.RUnlock()
 	for _, v := range man.id2stage {
@@ -45,10 +65,10 @@ func (man *Manager) GetAny() *stage.Stage {
 	return nil
 }
 
-func (man *Manager) GetList() []*stage.Stage {
+func (man *Manager) GetList() []stageI {
 	man.mutex.RLock()
 	defer man.mutex.RUnlock()
-	rtn := make([]*stage.Stage, len(man.id2stage))
+	rtn := make([]stageI, len(man.id2stage))
 	i := 0
 	for _, v := range man.id2stage {
 		rtn[i] = v
@@ -57,24 +77,24 @@ func (man *Manager) GetList() []*stage.Stage {
 	return rtn
 }
 
-func (man *Manager) GetByUUID(uuid string) *stage.Stage {
+func (man *Manager) GetByUUID(uuid string) stageI {
 	man.mutex.RLock()
 	defer man.mutex.RUnlock()
 	return man.id2stage[uuid]
 }
 
-func (man *Manager) Add(stg *stage.Stage) *stage.Stage {
+func (man *Manager) Add(stg stageI) stageI {
 	man.mutex.Lock()
 	defer man.mutex.Unlock()
-	old := man.id2stage[stg.UUID]
-	man.id2stage[stg.UUID] = stg
+	old := man.id2stage[stg.GetUUID()]
+	man.id2stage[stg.GetUUID()] = stg
 	return old
 }
 
-func (man *Manager) Del(stg *stage.Stage) *stage.Stage {
+func (man *Manager) Del(stg stageI) stageI {
 	man.mutex.Lock()
 	defer man.mutex.Unlock()
-	old := man.id2stage[stg.UUID]
-	delete(man.id2stage, stg.UUID)
+	old := man.id2stage[stg.GetUUID()]
+	delete(man.id2stage, stg.GetUUID())
 	return old
 }

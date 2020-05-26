@@ -11,7 +11,11 @@
 
 package stage
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_connbytemanager"
+)
 
 func (stg *Stage) String() string {
 	return fmt.Sprintf("Stage[%v Conn%v]",
@@ -19,19 +23,10 @@ func (stg *Stage) String() string {
 	)
 }
 
-const (
-	HTML_tableheader = `
-<tr>
-<th>UUID</th>
-<th>Conn</th>
-<th>Command</th>
-</tr>`
+func (stg *Stage) GetUUID() string {
+	return stg.UUID
+}
 
-	HTML_row = `
-<tr>
-<td>{{$v.UUID}}</td>
-<td>{{$v.Conns}}</td>
-<td><a href="/Del?id={{$v.UUID}}" target="_blank">[Del]</a></td>
-</tr>
-`
-)
+func (stg *Stage) GetConnManager() *gos_connbytemanager.Manager {
+	return stg.Conns
+}
