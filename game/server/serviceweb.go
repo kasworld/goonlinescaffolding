@@ -56,11 +56,10 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 		return
 	}
 
-	stg := svr.stageManager.GetAny()
 	connData := &conndata.ConnData{
 		UUID:       uuidstr.New(),
 		RemoteAddr: r.RemoteAddr,
-		StageID:    stg.GetUUID(),
+		// Session set at login
 	}
 	c2sc := gos_serveconnbyte.NewWithStats(
 		connData,
@@ -74,7 +73,6 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 
 	// add to conn manager
 	svr.connManager.Add(connData.UUID, c2sc)
-	stg.GetConnManager().Add(connData.UUID, c2sc)
 
 	// start client service
 	c2sc.StartServeWS(ctx, wsConn,
@@ -84,5 +82,11 @@ func (svr *Server) serveWebSocketClient(ctx context.Context, w http.ResponseWrit
 
 	// del from conn manager
 	svr.connManager.Del(connData.UUID)
-	stg.GetConnManager().Del(connData.UUID)
+	// stage may be changed
+	if ss := connData.Session; ss != nil {
+		stg := svr.stageManager.GetByUUID(ss.StageID)
+		if stg != nil {
+			stg.GetConnManager().Del(connData.UUID)
+		}
+	}
 }
