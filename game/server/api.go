@@ -35,13 +35,12 @@ func (svr *Server) setFnMap() {
 	svr.DemuxReq2BytesAPIFnMap = [...]func(
 		me interface{}, hd gos_packet.Header, rbody []byte) (
 		gos_packet.Header, interface{}, error){
-		gos_idcmd.Invalid:     svr.bytesAPIFn_ReqInvalid,
-		gos_idcmd.Login:       svr.bytesAPIFn_ReqLogin,
-		gos_idcmd.Heartbeat:   svr.bytesAPIFn_ReqHeartbeat,
-		gos_idcmd.MakeStage:   svr.bytesAPIFn_ReqMakeStage,
-		gos_idcmd.EnterStage:  svr.bytesAPIFn_ReqEnterStage,
-		gos_idcmd.ChatToStage: svr.bytesAPIFn_ReqChatToStage,
-		gos_idcmd.LeaveStage:  svr.bytesAPIFn_ReqLeaveStage,
+
+		gos_idcmd.Invalid:   svr.bytesAPIFn_ReqInvalid,   // Invalid not used, make empty packet error
+		gos_idcmd.Login:     svr.bytesAPIFn_ReqLogin,     // Login make session with nickname and enter stage
+		gos_idcmd.Heartbeat: svr.bytesAPIFn_ReqHeartbeat, // Heartbeat prevent connection timeout
+		gos_idcmd.Chat:      svr.bytesAPIFn_ReqChat,      // Chat chat to stage
+		gos_idcmd.Act:       svr.bytesAPIFn_ReqAct,       // Act send user action
 	}
 }
 
@@ -146,54 +145,14 @@ func (svr *Server) bytesAPIFn_ReqHeartbeat(
 	return sendHeader, sendBody, nil
 }
 
-func (svr *Server) bytesAPIFn_ReqMakeStage(
-	me interface{}, hd gos_packet.Header, rbody []byte) (
-	gos_packet.Header, interface{}, error) {
-	// robj, err := gos_gob.UnmarshalPacket(hd, rbody)
-	// if err != nil {
-	// 	return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
-	// }
-	// recvBody, ok := robj.(*gos_obj.ReqMakeStage_data)
-	// if !ok {
-	// 	return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
-	// }
-	// _ = recvBody
-
-	sendHeader := gos_packet.Header{
-		ErrorCode: gos_error.None,
-	}
-	sendBody := &gos_obj.RspMakeStage_data{}
-	return sendHeader, sendBody, nil
-}
-
-func (svr *Server) bytesAPIFn_ReqEnterStage(
-	me interface{}, hd gos_packet.Header, rbody []byte) (
-	gos_packet.Header, interface{}, error) {
-	// robj, err := gos_gob.UnmarshalPacket(hd, rbody)
-	// if err != nil {
-	// 	return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
-	// }
-	// recvBody, ok := robj.(*gos_obj.ReqEnterStage_data)
-	// if !ok {
-	// 	return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
-	// }
-	// _ = recvBody
-
-	sendHeader := gos_packet.Header{
-		ErrorCode: gos_error.None,
-	}
-	sendBody := &gos_obj.RspEnterStage_data{}
-	return sendHeader, sendBody, nil
-}
-
-func (svr *Server) bytesAPIFn_ReqChatToStage(
+func (svr *Server) bytesAPIFn_ReqChat(
 	me interface{}, hd gos_packet.Header, rbody []byte) (
 	gos_packet.Header, interface{}, error) {
 	robj, err := gos_gob.UnmarshalPacket(hd, rbody)
 	if err != nil {
 		return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
 	}
-	recvBody, ok := robj.(*gos_obj.ReqChatToStage_data)
+	recvBody, ok := robj.(*gos_obj.ReqChat_data)
 	if !ok {
 		return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
 	}
@@ -227,26 +186,27 @@ func (svr *Server) bytesAPIFn_ReqChatToStage(
 	sendHeader := gos_packet.Header{
 		ErrorCode: gos_error.None,
 	}
-	sendBody := &gos_obj.RspChatToStage_data{}
+	sendBody := &gos_obj.RspChat_data{}
 	return sendHeader, sendBody, nil
 }
 
-func (svr *Server) bytesAPIFn_ReqLeaveStage(
+// Act send user action
+func (svr *Server) bytesAPIFn_ReqAct(
 	me interface{}, hd gos_packet.Header, rbody []byte) (
 	gos_packet.Header, interface{}, error) {
-	// robj, err := gos_gob.UnmarshalPacket(hd, rbody)
-	// if err != nil {
-	// 	return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
-	// }
-	// recvBody, ok := robj.(*gos_obj.ReqLeaveStage_data)
-	// if !ok {
-	// 	return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
-	// }
-	// _ = recvBody
+	robj, err := gos_gob.UnmarshalPacket(hd, rbody)
+	if err != nil {
+		return hd, nil, fmt.Errorf("Packet type miss match %v", rbody)
+	}
+	recvBody, ok := robj.(*gos_obj.ReqAct_data)
+	if !ok {
+		return hd, nil, fmt.Errorf("Packet type miss match %v", robj)
+	}
+	_ = recvBody
 
 	sendHeader := gos_packet.Header{
 		ErrorCode: gos_error.None,
 	}
-	sendBody := &gos_obj.RspLeaveStage_data{}
+	sendBody := &gos_obj.RspAct_data{}
 	return sendHeader, sendBody, nil
 }

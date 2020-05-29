@@ -1,3 +1,3 @@
-Invalid
-StageInfo // stage info to display
-StageChat
+Invalid not used, make empty packet error
+StageInfo for client display
+StageChat broadcasted chat

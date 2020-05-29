@@ -58,7 +58,7 @@ func (vp *Viewport) DrawTitle() {
 	winH := win.Get("innerHeight").Int()
 
 	msgList := []string{
-		"Go 2D game",
+		"Go online Scaffolding",
 	}
 
 	cellW := winW / len(msgList[0])

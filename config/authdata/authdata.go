@@ -42,10 +42,8 @@ var allAuthorizationSet = map[string]*gos_authorize.AuthorizedCmds{
 
 	"Login": gos_authorize.NewByCmdIDList([]gos_idcmd.CommandID{
 		gos_idcmd.Heartbeat,
-		gos_idcmd.MakeStage,
-		gos_idcmd.EnterStage,
-		gos_idcmd.ChatToStage,
-		gos_idcmd.LeaveStage,
+		gos_idcmd.Chat,
+		gos_idcmd.Act,
 	}),
 	"Admin": gos_authorize.NewByCmdIDList([]gos_idcmd.CommandID{}),
 }

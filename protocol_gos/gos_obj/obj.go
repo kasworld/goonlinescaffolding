@@ -4,11 +4,14 @@ package gos_obj
 
 import "github.com/kasworld/goonlinescaffolding/protocol_gos/gos_idcmd"
 
+// Invalid not used, make empty packet error
 type ReqInvalid_data struct {
-	Dummy uint8
+	Dummy uint8 // change as you need
 }
+
+// Invalid not used, make empty packet error
 type RspInvalid_data struct {
-	Dummy uint8
+	Dummy uint8 // change as you need
 }
 
 type ReqLogin_data struct {
@@ -26,42 +29,37 @@ type RspLogin_data struct {
 	CmdList    [gos_idcmd.CommandID_Count]bool
 }
 
+// Heartbeat prevent connection timeout
 type ReqHeartbeat_data struct {
 	Tick int64
 }
+
+// Heartbeat prevent connection timeout
 type RspHeartbeat_data struct {
 	Tick int64
 }
 
-type ReqMakeStage_data struct {
-	Dummy uint8
-}
-type RspMakeStage_data struct {
-	Dummy uint8
-}
-
-type ReqEnterStage_data struct {
-	StageUUID string // may be not same to req stage
-	NickToUse string
-}
-type RspEnterStage_data struct {
-	StageUUID string // may be not same to req stage
-	NickToUse string // may be not same to req nick
-}
-
-type ReqChatToStage_data struct {
+// Chat chat to stage
+type ReqChat_data struct {
 	Chat string
 }
-type RspChatToStage_data struct {
+
+// Chat chat to stage
+type RspChat_data struct {
 	Dummy uint8
 }
 
-type ReqLeaveStage_data struct {
-	Dummy uint8
+// Act send user action
+type ReqAct_data struct {
+	Dummy uint8 // change as you need
 }
-type RspLeaveStage_data struct {
-	Dummy uint8
+
+// Act send user action
+type RspAct_data struct {
+	Dummy uint8 // change as you need
 }
+
+//////////////////////////////////////////////////////////////////////////////
 
 type NotiInvalid_data struct {
 	Dummy uint8
