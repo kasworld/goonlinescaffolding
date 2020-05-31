@@ -19,10 +19,12 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/kasworld/goonlinescaffolding/config/authdata"
 	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/game/stagelist4client"
 	"github.com/kasworld/goonlinescaffolding/lib/conndata"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_gob"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_serveconnbyte"
 	"github.com/kasworld/uuidstr"
+	"github.com/kasworld/weblib"
 )
 
 func (svr *Server) initServiceWeb(ctx context.Context) {
@@ -30,6 +32,7 @@ func (svr *Server) initServiceWeb(ctx context.Context) {
 	webMux.Handle("/",
 		http.FileServer(http.Dir(svr.config.ClientDataFolder)),
 	)
+	webMux.HandleFunc("/stagelist.json", svr.json_StageList)
 	webMux.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		svr.serveWebSocketClient(ctx, w, r)
 	})
@@ -40,6 +43,19 @@ func (svr *Server) initServiceWeb(ctx context.Context) {
 	svr.marshalBodyFn = gos_gob.MarshalBodyFn
 	svr.unmarshalPacketFn = gos_gob.UnmarshalPacket
 	svr.setFnMap()
+}
+
+func (svr *Server) json_StageList(w http.ResponseWriter, r *http.Request) {
+	n := svr.stageManager.Count()
+	stgList := svr.stageManager.GetSortedListByPage(0, n)
+	jdata := make(stagelist4client.StageList, 0, n)
+	for _, v := range stgList {
+		jdata = append(jdata, stagelist4client.Stage{
+			UUID: v.GetUUID(),
+			Info: fmt.Sprintf("%v", v),
+		})
+	}
+	weblib.ServeJSON2HTTP(jdata, w)
 }
 
 func CheckOrigin(r *http.Request) bool {
