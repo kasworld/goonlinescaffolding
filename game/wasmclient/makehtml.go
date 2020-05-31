@@ -14,9 +14,13 @@ package wasmclient
 import (
 	"bytes"
 	"fmt"
+	"net/url"
+	"syscall/js"
 
 	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/game/stagelist4client"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_version"
+	"github.com/kasworld/gowasmlib/jslog"
 )
 
 func (app *WasmClient) makeButtons() string {
@@ -50,4 +54,48 @@ func (app *WasmClient) makeDebugInfo() string {
 		app.DispInterDur, app.PingDur, app.ServerClientTictDiff,
 	)
 	return buf.String()
+}
+
+func loadStageListHTML() string {
+	tlurl := ReplacePathFromHref("stagelist.json")
+	aol, err := stagelist4client.LoadFromURL(tlurl)
+	if err != nil {
+		jslog.Errorf("stagelist load fail %v", err)
+		return "fail to load stagelist"
+	}
+	var buf bytes.Buffer
+	buf.WriteString(`
+		stage list in server
+		<table border=2>
+		<tr>
+		<th>Number</th> <th>UUID</th> <th>Info</th> <th>Command</th> 
+		</tr>	
+		`)
+	for i, stg := range aol {
+		fmt.Fprintf(&buf, `
+		<tr>
+		<td>%v</td> <td>%v</td> <td>%v</td> 
+		<td><button type="button" style="font-size:20px;" onclick="enterStage('%v')">Enter Stage</button></td> 
+		</tr>`,
+			i, stg.UUID, stg.Info, stg.UUID,
+		)
+	}
+	buf.WriteString(`
+		<tr>
+		<th>Number</th> <th>UUID</th> <th>Type</th> <th>Command</th> 
+		</tr>
+		</table>
+		`)
+	return buf.String()
+}
+
+func ReplacePathFromHref(s string) string {
+	loc := js.Global().Get("window").Get("location").Get("href")
+	u, err := url.Parse(loc.String())
+	if err != nil {
+		jslog.Errorf("%v", err)
+		return ""
+	}
+	u.Path = s
+	return u.String()
 }
