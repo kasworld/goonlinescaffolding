@@ -13,13 +13,10 @@ package stagemanager
 
 import (
 	"sync"
-
-	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_connbytemanager"
 )
 
 type stageI interface {
 	GetUUID() string
-	GetConnManager() *gos_connbytemanager.Manager
 }
 
 type stageList []stageI

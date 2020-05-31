@@ -104,7 +104,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	// select stage to play
 	stg := svr.stageManager.GetAny()
 	ss.StageID = stg.GetUUID()
-	stg.GetConnManager().Add(connData.UUID, c2sc)
+	stg.(stageApiI).GetConnManager().Add(connData.UUID, c2sc)
 
 	// user login?
 
@@ -158,13 +158,9 @@ func (svr *Server) bytesAPIFn_ReqChat(
 	}
 	_ = recvBody
 
-	conn, ok := me.(*gos_serveconnbyte.ServeConnByte)
-	if !ok {
-		return hd, nil, fmt.Errorf("Packet type miss match %v", me)
-	}
-	connData, ok := conn.GetConnData().(*conndata.ConnData)
-	if !ok {
-		return hd, nil, fmt.Errorf("Packet type miss match %v", conn.GetConnData())
+	connData, err := svr.api_me2conndata(me)
+	if err != nil {
+		return hd, nil, err
 	}
 
 	stg := svr.stageManager.GetByUUID(connData.Session.StageID)
@@ -172,7 +168,7 @@ func (svr *Server) bytesAPIFn_ReqChat(
 		svr.log.Fatal("no stage to chat %v", connData)
 		return hd, nil, fmt.Errorf("stage not ready %v", connData)
 	}
-	connList := stg.GetConnManager().GetList()
+	connList := stg.(stageApiI).GetConnManager().GetList()
 	noti := &gos_obj.NotiStageChat_data{
 		SenderNick: connData.Session.NickName,
 		Chat:       recvBody.Chat,
