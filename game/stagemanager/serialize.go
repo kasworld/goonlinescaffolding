@@ -15,6 +15,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
+	"sort"
 
 	"github.com/kasworld/weblib"
 )
@@ -24,6 +25,28 @@ func (man *Manager) String() string {
 		"StageManager[Count:%v]",
 		man.Count(),
 	)
+}
+
+func (man *Manager) GetSortedListByPage(page, pagesize int) []stageI {
+	if page < 0 || pagesize < 1 {
+		return []stageI{}
+	}
+
+	stgList := man.GetList()
+	sort.Sort(stageList(stgList))
+
+	st := page * pagesize
+	if st < 0 || st >= len(stgList) {
+		st = 0
+	}
+
+	ed := st + pagesize
+	if ed > len(stgList) {
+		ed = len(stgList)
+	}
+
+	rtn := stgList[st:ed]
+	return rtn
 }
 
 func (man *Manager) ToWeb(w http.ResponseWriter, r *http.Request) {

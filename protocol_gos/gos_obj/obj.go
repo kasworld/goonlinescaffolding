@@ -15,9 +15,10 @@ type RspInvalid_data struct {
 }
 
 type ReqLogin_data struct {
-	SessionKey string
-	NickName   string
-	AuthKey    string
+	SessionKey   string
+	NickName     string
+	AuthKey      string
+	StageToEnter string // stage number or uuid, empty or unknown to random
 }
 type RspLogin_data struct {
 	Version         string
@@ -25,6 +26,7 @@ type RspLogin_data struct {
 	DataVersion     string
 
 	SessionKey string
+	StageUUID  string
 	NickName   string
 	CmdList    [gos_idcmd.CommandID_Count]bool
 }

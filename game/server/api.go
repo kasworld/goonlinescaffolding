@@ -102,7 +102,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 	connData.Session = ss
 
 	// select stage to play
-	stg := svr.stageManager.GetAny()
+	stg := svr.stageManager.GetStageByStageToEnter(recvBody.StageToEnter)
 	ss.StageID = stg.GetUUID()
 	stg.(stageApiI).GetConnManager().Add(connData.UUID, c2sc)
 
@@ -116,6 +116,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 			ProtocolVersion: gos_version.ProtocolVersion,
 			DataVersion:     gameconst.DataVersion,
 			SessionKey:      recvBody.SessionKey,
+			StageUUID:       ss.StageID,
 			NickName:        recvBody.NickName,
 			CmdList:         *gos_authorize.NewAllSet(),
 		}
