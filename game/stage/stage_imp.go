@@ -18,7 +18,7 @@ import (
 )
 
 func (stg *Stage) String() string {
-	return fmt.Sprintf("Stage[%v Conn%v]",
+	return fmt.Sprintf("Stage[%v %v]",
 		stg.UUID, stg.Conns,
 	)
 }
