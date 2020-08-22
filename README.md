@@ -59,15 +59,8 @@ Log 패키지 및 커스텀 로그레벨 로거 생성기 : https://github.com/k
 
 # windows 에서 작동시키려면?
 
-build.sh같은 shell script 이외에도 
+signalhandlewin을 사용하는 rundriver/serverwin.go 를 사용하시면 됩니다. 
 
-리눅스 서비스로 만들기 위해 사용하는 https://github.com/kasworld/signalhandle 
-
-서비스 processid 를 저장하는 lockfile 관련 github.com/nightlyone/lockfile
-
-logrotate 에 관련된 부분 https://github.com/kasworld/log
-
-정도가 windows에서 문제를 일으킬 가능성이 있습니다. 
 
 # packet marshaler(serializer)
 

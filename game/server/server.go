@@ -32,7 +32,6 @@ import (
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_statnoti"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_statserveapi"
 	"github.com/kasworld/prettystring"
-	"github.com/kasworld/signalhandle"
 	"github.com/kasworld/weblib/retrylistenandserve"
 )
 
@@ -94,7 +93,8 @@ func (svr *Server) GetServiceLockFilename() string {
 }
 
 // called from signal handler
-func (svr *Server) GetLogger() signalhandle.LoggerI {
+// return implement signalhandle.LoggerI
+func (svr *Server) GetLogger() interface{} {
 	return goslog.GlobalLogger
 }
 
