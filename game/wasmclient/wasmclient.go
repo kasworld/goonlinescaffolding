@@ -18,7 +18,7 @@ import (
 	"time"
 
 	"github.com/kasworld/actjitter"
-	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/config/dataversion"
 	"github.com/kasworld/goonlinescaffolding/lib/clientcookie"
 	"github.com/kasworld/goonlinescaffolding/lib/jskeypressmap"
 	"github.com/kasworld/goonlinescaffolding/lib/jsobj"
@@ -109,9 +109,9 @@ func (app *WasmClient) enterStage() {
 	}
 	defer app.Cleanup()
 
-	if gameconst.DataVersion != app.loginData.DataVersion {
+	if dataversion.DataVersion != app.loginData.DataVersion {
 		jslog.Errorf("DataVersion mismatch client %v server %v",
-			gameconst.DataVersion, app.loginData.DataVersion)
+			dataversion.DataVersion, app.loginData.DataVersion)
 	}
 	if gos_version.ProtocolVersion != app.loginData.ProtocolVersion {
 		jslog.Errorf("ProtocolVersion mismatch client %v server %v",

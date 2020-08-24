@@ -18,7 +18,7 @@ import (
 	"github.com/kasworld/argdefault"
 	"github.com/kasworld/configutil"
 	"github.com/kasworld/go-profile"
-	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/config/dataversion"
 	"github.com/kasworld/goonlinescaffolding/config/serverconfig"
 	"github.com/kasworld/goonlinescaffolding/game/server"
 	"github.com/kasworld/goonlinescaffolding/lib/goslog"
@@ -37,7 +37,7 @@ func init() {
 func printVersion() {
 	fmt.Println("goonlinescaffolding")
 	fmt.Println("Build     ", version.GetVersion())
-	fmt.Println("Data      ", gameconst.DataVersion)
+	fmt.Println("Data      ", dataversion.DataVersion)
 	fmt.Println("Protocol  ", gos_version.ProtocolVersion)
 	fmt.Println()
 }

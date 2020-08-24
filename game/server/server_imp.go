@@ -16,7 +16,7 @@ import (
 	"time"
 
 	"github.com/kasworld/actpersec"
-	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/config/dataversion"
 	"github.com/kasworld/goonlinescaffolding/config/serverconfig"
 	"github.com/kasworld/goonlinescaffolding/game/stagemanager"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_connbytemanager"
@@ -41,7 +41,7 @@ func (svr *Server) GetProtocolVersion() string {
 }
 
 func (svr *Server) GetDataVersion() string {
-	return gameconst.DataVersion
+	return dataversion.DataVersion
 }
 
 func (svr *Server) NumGoroutine() int {

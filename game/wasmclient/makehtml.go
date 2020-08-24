@@ -17,7 +17,7 @@ import (
 	"net/url"
 	"syscall/js"
 
-	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/config/dataversion"
 	"github.com/kasworld/goonlinescaffolding/game/stagelist4client"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_version"
 	"github.com/kasworld/gowasmlib/jslog"
@@ -42,7 +42,7 @@ func (app *WasmClient) makeServiceInfo() string {
 	var buf bytes.Buffer
 	fmt.Fprintf(&buf, "goonlinescaffolding webclient<br/>")
 	fmt.Fprintf(&buf, "Protocol %v<br/>", gos_version.ProtocolVersion)
-	fmt.Fprintf(&buf, "Data %v<br/>", gameconst.DataVersion)
+	fmt.Fprintf(&buf, "Data %v<br/>", dataversion.DataVersion)
 	fmt.Fprintf(&buf, "%v<br/>", msgCopyright)
 	return buf.String()
 }

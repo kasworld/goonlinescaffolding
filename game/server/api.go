@@ -17,7 +17,7 @@ import (
 	"time"
 
 	"github.com/kasworld/goonlinescaffolding/config/authdata"
-	"github.com/kasworld/goonlinescaffolding/config/gameconst"
+	"github.com/kasworld/goonlinescaffolding/config/dataversion"
 	"github.com/kasworld/goonlinescaffolding/lib/conndata"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_authorize"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_error"
@@ -114,7 +114,7 @@ func (svr *Server) bytesAPIFn_ReqLogin(
 		sendBody := &gos_obj.RspLogin_data{
 			Version:         version.GetVersion(),
 			ProtocolVersion: gos_version.ProtocolVersion,
-			DataVersion:     gameconst.DataVersion,
+			DataVersion:     dataversion.DataVersion,
 			SessionKey:      recvBody.SessionKey,
 			StageUUID:       ss.StageID,
 			NickName:        recvBody.NickName,
