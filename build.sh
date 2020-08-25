@@ -19,7 +19,7 @@ cd ..
 ################################################################################
 # generate enum
 # genenum -typename=TeamType -packagename=teamtype -basedir=enum -vectortype=int
-
+echo "generate enums"
 cd enum 
 goimports -w .
 cd .. 
