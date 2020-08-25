@@ -20,11 +20,13 @@ webgl 을 사용한 3D game 예제를 보려면 https://github.com/kasworld/gowa
 
 준비물 : linux(debian,ubuntu,mint) , chrome web brower , golang 
 
-버전 string 생성시 사용 : sha256sum, awk
-
 goimports : 소스 코드 정리, import 해결
 
     go get golang.org/x/tools/cmd/goimports
+
+버전 string 생성시 사용 : windows, linux 간에 같은 string생성
+
+    go get github.com/kasworld/makesha256sum
 
 프로토콜 생성기 : https://github.com/kasworld/genprotocol
 
