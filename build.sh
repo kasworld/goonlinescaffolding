@@ -68,7 +68,7 @@ BuildBin ${SRC_DIR}/server.go ${BIN_DIR} server
 BuildBin ${SRC_DIR}/multiclient.go ${BIN_DIR} multiclient
 
 cd rundriver
-./genwasmclient.sh
+./genwasmclient.sh ${BUILD_VER}
 cd ..
 
 # copy data to bin folder
