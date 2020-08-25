@@ -1,4 +1,11 @@
 
+
+# del generated code 
+# Get-ChildItem .\enum\ -Recurse -Include *_gen.go | Remove-Item
+# Get-ChildItem .\protocol_gos\ -Recurse -Include *_gen.go | Remove-Item
+# Remove-Item lib\goslog\log_gen.go
+# Remove-Item config/dataversion/dataversion_gen.go 
+
 ################################################################################
 Set-Location lib
 Write-Output "genlog -leveldatafile ./goslog/goslog.data -packagename goslog "
