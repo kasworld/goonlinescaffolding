@@ -77,7 +77,7 @@ func New(config serverconfig.Config) *Server {
 		notiStat:       gos_statnoti.New(),
 		errorStat:      gos_statapierror.New(),
 		connManager:    gos_connbytemanager.New(),
-		sessionManager: sessionmanager.New("", 100, l),
+		sessionManager: sessionmanager.New("", config.ConcurrentConnections, l),
 
 		stageManager: stagemanager.New(l),
 	}

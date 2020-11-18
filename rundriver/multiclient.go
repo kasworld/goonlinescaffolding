@@ -15,6 +15,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"sync"
 	"time"
 
 	"github.com/kasworld/argdefault"
@@ -127,6 +128,10 @@ func NewApp(config AppArg, log *goslog.LogBase) *App {
 	return app
 }
 
+func (app *App) String() string {
+	return fmt.Sprintf("App[%v %v]", app.config.Nickname, app.config.SessionUUID)
+}
+
 func (app *App) GetArg() interface{} {
 	return app.config
 }
@@ -156,6 +161,26 @@ func (app *App) Run(mainctx context.Context) {
 	go func(ctx context.Context) {
 		app.runResult = app.c2scWS.Run(ctx)
 	}(ctx)
+
+	// login
+	var wg sync.WaitGroup
+	var rtn *gos_obj.RspLogin_data
+	wg.Add(1)
+	app.ReqWithRspFn(
+		gos_idcmd.Login,
+		&gos_obj.ReqLogin_data{
+			SessionKey: app.config.SessionUUID,
+			NickName:   app.config.Nickname,
+			AuthKey:    "",
+		},
+		func(hd gos_packet.Header, rsp interface{}) error {
+
+			rtn = rsp.(*gos_obj.RspLogin_data)
+			wg.Done()
+			return nil
+		},
+	)
+	wg.Wait()
 
 	timerPingTk := time.NewTicker(time.Second)
 	defer timerPingTk.Stop()
@@ -194,6 +219,11 @@ func (app *App) handleSentPacket(header gos_packet.Header) error {
 }
 
 func (app *App) handleRecvPacket(header gos_packet.Header, body []byte) error {
+	robj, err := gos_gob.UnmarshalPacket(header, body)
+	if err != nil {
+		return err
+	}
+
 	switch header.FlowType {
 	default:
 		return fmt.Errorf("Invalid packet type %v %v", header, body)
@@ -219,7 +249,7 @@ func (app *App) handleRecvPacket(header gos_packet.Header, body []byte) error {
 		app.pid2statobj.Del(header.ID)
 
 		// process response
-		if err := app.pid2recv.HandleRsp(header, body); err != nil {
+		if err := app.pid2recv.HandleRsp(header, robj); err != nil {
 			return err
 		}
 	}
