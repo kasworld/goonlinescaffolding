@@ -31,6 +31,7 @@ import (
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_statapierror"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_statnoti"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_statserveapi"
+	"github.com/kasworld/log/logflags"
 	"github.com/kasworld/prettystring"
 	"github.com/kasworld/weblib/retrylistenandserve"
 )
@@ -64,10 +65,32 @@ type Server struct {
 }
 
 func New(config serverconfig.Config) *Server {
-	l := goslog.GlobalLogger
+	if config.BaseLogDir != "" {
+		log, err := goslog.NewWithDstDir(
+			"",
+			config.MakeLogDir(),
+			logflags.DefaultValue(false).BitClear(logflags.LF_functionname),
+			config.LogLevel,
+			config.SplitLogLevel,
+		)
+		if err == nil {
+			goslog.GlobalLogger = log
+		} else {
+			fmt.Printf("%v\n", err)
+			goslog.GlobalLogger.SetFlags(
+				goslog.GlobalLogger.GetFlags().BitClear(logflags.LF_functionname))
+			goslog.GlobalLogger.SetLevel(
+				config.LogLevel)
+		}
+	} else {
+		goslog.GlobalLogger.SetFlags(
+			goslog.GlobalLogger.GetFlags().BitClear(logflags.LF_functionname))
+		goslog.GlobalLogger.SetLevel(
+			config.LogLevel)
+	}
 	svr := &Server{
 		config: config,
-		log:    l,
+		log:    goslog.GlobalLogger,
 		rnd:    rand.New(rand.NewSource(time.Now().UnixNano())),
 
 		SendStat: actpersec.New(),
@@ -77,9 +100,9 @@ func New(config serverconfig.Config) *Server {
 		notiStat:       gos_statnoti.New(),
 		errorStat:      gos_statapierror.New(),
 		connManager:    gos_connbytemanager.New(),
-		sessionManager: sessionmanager.New("", config.ConcurrentConnections, l),
+		sessionManager: sessionmanager.New("", config.ConcurrentConnections, goslog.GlobalLogger),
 
-		stageManager: stagemanager.New(l),
+		stageManager: stagemanager.New(goslog.GlobalLogger),
 	}
 	svr.sendRecvStop = func() {
 		fmt.Printf("Too early sendRecvStop call\n")

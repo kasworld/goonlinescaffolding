@@ -11,9 +11,9 @@ import (
 )
 
 type Config struct {
-	LogLevel              goslog.LL_Type `argname:""`
-	SplitLogLevel         goslog.LL_Type `argname:""`
-	BaseLogDir            string         `default:"/tmp/"  argname:""`
+	LogLevel              goslog.LL_Type `default:"7" argname:""`
+	SplitLogLevel         goslog.LL_Type `default:"0" argname:""`
+	BaseLogDir            string         `default:""  argname:""`
 	ServerDataFolder      string         `default:"./serverdata" argname:""`
 	ClientDataFolder      string         `default:"./clientdata" argname:""`
 	ServicePort           string         `default:":24101"  argname:""`

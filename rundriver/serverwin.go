@@ -21,9 +21,7 @@ import (
 	"github.com/kasworld/goonlinescaffolding/config/dataversion"
 	"github.com/kasworld/goonlinescaffolding/config/serverconfig"
 	"github.com/kasworld/goonlinescaffolding/game/server"
-	"github.com/kasworld/goonlinescaffolding/lib/goslog"
 	"github.com/kasworld/goonlinescaffolding/protocol_gos/gos_version"
-	"github.com/kasworld/log/logflags"
 	"github.com/kasworld/signalhandlewin"
 	"github.com/kasworld/version"
 )
@@ -52,14 +50,11 @@ func main() {
 	ads := argdefault.New(&serverconfig.Config{})
 	ads.RegisterFlag()
 	flag.Parse()
-	config := &serverconfig.Config{
-		LogLevel:      goslog.LL_All,
-		SplitLogLevel: 0,
-	}
+	config := &serverconfig.Config{}
 	ads.SetDefaultToNonZeroField(config)
 	if *configurl != "" {
 		if err := configutil.LoadIni(*configurl, &config); err != nil {
-			goslog.Fatal("%v", err)
+			fmt.Printf("%v\n", err)
 		}
 	}
 	ads.ApplyFlagTo(config)
@@ -71,22 +66,9 @@ func main() {
 		defer fn()
 	}
 
-	l, err := goslog.NewWithDstDir(
-		"",
-		config.MakeLogDir(),
-		logflags.DefaultValue(false).BitClear(logflags.LF_functionname),
-		config.LogLevel,
-		config.SplitLogLevel,
-	)
-	if err != nil {
-		fmt.Printf("%v\n", err)
-		return
-	}
-	goslog.GlobalLogger = l
-
 	svr := server.New(*config)
 	if err := signalhandlewin.StartByArgs(svr); err != nil {
-		goslog.Error("%v", err)
+		fmt.Printf("%v\n", err)
 	}
 
 	if profile.IsMem() {
