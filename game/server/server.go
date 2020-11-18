@@ -19,7 +19,6 @@ import (
 	"time"
 
 	"github.com/kasworld/actpersec"
-	"github.com/kasworld/goonlinescaffolding/config/gameconst"
 	"github.com/kasworld/goonlinescaffolding/config/serverconfig"
 	"github.com/kasworld/goonlinescaffolding/game/stage"
 	"github.com/kasworld/goonlinescaffolding/game/stagemanager"
@@ -148,7 +147,7 @@ func (svr *Server) ServiceMain(mainctx context.Context) {
 	go retrylistenandserve.RetryListenAndServe(svr.adminWeb, svr.log, "serveAdminWeb")
 	go retrylistenandserve.RetryListenAndServe(svr.clientWeb, svr.log, "serveServiceWeb")
 
-	for i := 0; i < gameconst.StagePerServer; i++ {
+	for i := 0; i < svr.config.StageCount; i++ {
 		stg := stage.New(svr.log, svr.config)
 		svr.stageManager.Add(stg)
 		go stg.Run(ctx)

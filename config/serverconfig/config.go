@@ -19,6 +19,7 @@ type Config struct {
 	ServicePort           string         `default:":24101"  argname:""`
 	AdminPort             string         `default:":24201"  argname:""`
 	ConcurrentConnections int            `default:"1000" argname:""`
+	StageCount            int            `default:"10" argname:""`
 	ActTurnPerSec         float64        `default:"30.0" argname:""`
 }
 
