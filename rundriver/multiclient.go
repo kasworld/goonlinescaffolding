@@ -105,7 +105,7 @@ type AppArg struct {
 type App struct {
 	config            AppArg
 	c2scWS            *gos_connwsgorilla.Connection
-	EnqueueSendPacket func(pk gos_packet.Packet) error
+	EnqueueSendPacket func(pk *gos_packet.Packet) error
 	runResult         error
 
 	sendRecvStop func()
@@ -145,12 +145,7 @@ func (app *App) Run(mainctx context.Context) {
 	app.sendRecvStop = stopFn
 	defer app.sendRecvStop()
 
-	app.c2scWS = gos_connwsgorilla.New(
-		readTimeoutSec, writeTimeoutSec,
-		gos_gob.MarshalBodyFn,
-		app.handleRecvPacket,
-		app.handleSentPacket,
-	)
+	app.c2scWS = gos_connwsgorilla.New(10)
 	if err := app.c2scWS.ConnectTo(app.config.ConnectToServer); err != nil {
 		fmt.Printf("%v\n", err)
 		app.sendRecvStop()
@@ -159,7 +154,12 @@ func (app *App) Run(mainctx context.Context) {
 	}
 	app.EnqueueSendPacket = app.c2scWS.EnqueueSendPacket
 	go func(ctx context.Context) {
-		app.runResult = app.c2scWS.Run(ctx)
+		app.runResult = app.c2scWS.Run(ctx,
+			readTimeoutSec, writeTimeoutSec,
+			gos_gob.MarshalBodyFn,
+			app.handleRecvPacket,
+			app.handleSentPacket,
+		)
 	}(ctx)
 
 	// login
@@ -211,8 +211,8 @@ func (app *App) reqHeartbeat() error {
 	)
 }
 
-func (app *App) handleSentPacket(header gos_packet.Header) error {
-	if err := app.apistat.AfterSendReq(header); err != nil {
+func (app *App) handleSentPacket(pk *gos_packet.Packet) error {
+	if err := app.apistat.AfterSendReq(pk.Header); err != nil {
 		return err
 	}
 	return nil
@@ -276,7 +276,7 @@ func (app *App) ReqWithRspFn(cmd gos_idcmd.CommandID, body interface{},
 	}
 	app.pid2statobj.Add(spk.Header.ID, psobj)
 
-	if err := app.EnqueueSendPacket(spk); err != nil {
+	if err := app.EnqueueSendPacket(&spk); err != nil {
 		fmt.Printf("End %v %v %v\n", app, spk, err)
 		app.sendRecvStop()
 		return fmt.Errorf("Send fail %v %v", app, err)
